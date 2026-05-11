@@ -1,7 +1,7 @@
 'use client'
 import { motion } from 'framer-motion'
 import { personalInfo } from '@/lib/data'
-import { FiGithub, FiLinkedin, FiArrowDown } from 'react-icons/fi'
+import { FiGithub, FiLinkedin, FiArrowDown, FiDownload } from 'react-icons/fi'
 
 const container = {
   hidden: { opacity: 0 },
@@ -83,6 +83,16 @@ export default function Hero() {
           >
             Get In Touch
           </motion.a>
+          <motion.a
+            href="/Ahmed_Khaled_CV.pdf"
+            download="Ahmed_Khaled_CV.pdf"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.97 }}
+            className="flex items-center gap-2 px-8 py-3.5 rounded-full border border-accent-blue/40 text-accent-blue font-body font-medium text-sm tracking-wide hover:bg-accent-blue/10 hover:border-accent-blue transition-all"
+          >
+          <FiDownload size={15} />
+          Download CV
+        </motion.a>
         </motion.div>
 
         {/* Social links */}
