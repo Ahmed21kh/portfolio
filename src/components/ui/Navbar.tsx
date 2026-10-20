@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion'
+import ThemeToggle from '@/components/ui/ThemeToggle'
 import { navLinks } from '@/lib/data'
 import Image from 'next/image'
 
@@ -8,6 +9,26 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [active, setActive] = useState('')
+
+  const { scrollYProgress } = useScroll()
+  const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30 })
+
+  // Highlight the nav link of the section currently in view
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) setActive(`#${e.target.id}`)
+        })
+      },
+      { rootMargin: '-45% 0px -50% 0px' }
+    )
+    navLinks.forEach((l) => {
+      const el = document.querySelector(l.href)
+      if (el) observer.observe(el)
+    })
+    return () => observer.disconnect()
+  }, [])
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 40)
@@ -33,7 +54,7 @@ export default function Navbar() {
       transition={{ duration: 0.6, ease: 'easeOut' }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
-          ? 'py-3 bg-bg-primary/80 backdrop-blur-xl border-b border-white/5 shadow-card'
+          ? 'py-3 bg-bg-primary/80 backdrop-blur-xl border-b border-fg/5 shadow-card'
           : 'py-6'
       }`}
     >
@@ -64,16 +85,18 @@ export default function Navbar() {
                 href={link.href}
                 onClick={() => setActive(link.href)}
                 className={`relative text-sm font-body font-medium tracking-wide transition-colors duration-200 group ${
-                  active === link.href ? 'text-text-primary' : 'text-text-secondary hover:text-text-primary'
+                  active === link.href ? 'text-accent-blue' : 'text-text-secondary hover:text-text-primary'
                 }`}
               >
                 {link.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-px bg-accent-blue group-hover:w-full transition-all duration-300" />
+                <span className={`absolute -bottom-1 left-0 h-px bg-accent-blue group-hover:w-full transition-all duration-300 ${active === link.href ? 'w-full' : 'w-0'}`} />
               </a>
             </motion.li>
           ))}
         </ul>
 
+        <div className="hidden md:flex items-center gap-3">
+        <ThemeToggle />
         {/* CTA */}
         <motion.a
           href="#contact"
@@ -86,10 +109,13 @@ export default function Navbar() {
         >
           Hire Me
         </motion.a>
+        </div>
 
         {/* Mobile Toggle */}
+        <div className="md:hidden flex items-center gap-1">
+        <ThemeToggle />
         <button
-          className="md:hidden flex flex-col gap-1.5 p-2"
+          className="flex flex-col gap-1.5 p-2"
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle menu"
         >
@@ -106,7 +132,14 @@ export default function Navbar() {
             className="block w-6 h-0.5 bg-text-primary origin-center transition-all"
           />
         </button>
+        </div>
       </nav>
+
+      {/* Scroll progress */}
+      <motion.div
+        style={{ scaleX: progress }}
+        className="absolute bottom-0 left-0 right-0 h-0.5 origin-left bg-gradient-to-r from-accent-blue to-accent-cyan"
+      />
 
       {/* Mobile Menu */}
       <AnimatePresence>
@@ -115,7 +148,7 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden border-t border-white/5 bg-bg-primary/95 backdrop-blur-xl"
+            className="md:hidden border-t border-fg/5 bg-bg-primary/95 backdrop-blur-xl"
           >
             <ul className="flex flex-col px-6 py-4 gap-4">
               {navLinks.map((link) => (

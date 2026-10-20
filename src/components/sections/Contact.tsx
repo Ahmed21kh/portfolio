@@ -20,7 +20,7 @@ export default function Contact() {
   }
 
   return (
-    <section id="contact" className="relative py-28 px-6 z-10">
+    <section id="contact" className="relative py-14 px-6 z-10">
       {/* Glow */}
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-96 h-64 bg-accent-blue/10 rounded-full blur-[100px] pointer-events-none" />
 
@@ -29,7 +29,7 @@ export default function Contact() {
           initial={{ opacity: 0, x: -20 }}
           animate={inView ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.5 }}
-          className="flex items-center gap-3 mb-16"
+          className="flex items-center gap-3 mb-10"
         >
           <span className="font-mono text-accent-blue text-sm tracking-widest">05.</span>
           <h2 className="font-display font-bold text-3xl sm:text-4xl text-text-primary">Contact</h2>
@@ -59,7 +59,7 @@ export default function Contact() {
                 <a
                   key={label}
                   href={href}
-                  className="flex items-center gap-4 p-4 rounded-xl bg-bg-card border border-white/5 hover:border-accent-blue/30 transition-all duration-200 group"
+                  className="flex items-center gap-4 p-4 rounded-xl bg-bg-card border border-fg/5 hover:border-accent-blue/30 transition-all duration-200 group"
                 >
                   <div className="p-2 rounded-lg bg-accent-blue/10 group-hover:bg-accent-blue/20 transition-colors">
                     <Icon className="text-accent-blue" size={16} />
@@ -83,7 +83,7 @@ export default function Contact() {
                   target="_blank"
                   rel="noopener noreferrer"
                   whileHover={{ scale: 1.1, y: -2 }}
-                  className="p-3 rounded-xl bg-bg-card border border-white/5 hover:border-accent-blue/30 text-text-muted hover:text-accent-blue transition-all duration-200"
+                  className="p-3 rounded-xl bg-bg-card border border-fg/5 hover:border-accent-blue/30 text-text-muted hover:text-accent-blue transition-all duration-200"
                 >
                   <Icon size={18} />
                 </motion.a>
@@ -112,7 +112,7 @@ export default function Contact() {
                     placeholder={field.placeholder}
                     value={formState[field.name as keyof typeof formState]}
                     onChange={e => setFormState(prev => ({ ...prev, [field.name]: e.target.value }))}
-                    className="w-full px-4 py-3 rounded-xl bg-bg-card border border-white/10 text-text-primary font-body text-sm placeholder:text-text-muted focus:outline-none focus:border-accent-blue/50 focus:shadow-glow-sm transition-all duration-200"
+                    className="w-full px-4 py-3 rounded-xl bg-bg-card border border-fg/10 text-text-primary font-body text-sm placeholder:text-text-muted focus:outline-none focus:border-accent-blue/50 focus:shadow-glow-sm transition-all duration-200"
                   />
                 </div>
               ))}
@@ -127,7 +127,7 @@ export default function Contact() {
                   placeholder="Tell me about your project..."
                   value={formState.message}
                   onChange={e => setFormState(prev => ({ ...prev, message: e.target.value }))}
-                  className="w-full px-4 py-3 rounded-xl bg-bg-card border border-white/10 text-text-primary font-body text-sm placeholder:text-text-muted focus:outline-none focus:border-accent-blue/50 focus:shadow-glow-sm transition-all duration-200 resize-none"
+                  className="w-full px-4 py-3 rounded-xl bg-bg-card border border-fg/10 text-text-primary font-body text-sm placeholder:text-text-muted focus:outline-none focus:border-accent-blue/50 focus:shadow-glow-sm transition-all duration-200 resize-none"
                 />
               </div>
 

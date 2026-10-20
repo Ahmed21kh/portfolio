@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: 'class',
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -14,20 +15,21 @@ module.exports = {
       },
       colors: {
         bg: {
-          primary: '#050A14',
-          secondary: '#0A1628',
-          card: '#0D1F3C',
+          primary: 'rgb(var(--bg-primary) / <alpha-value>)',
+          secondary: 'rgb(var(--bg-secondary) / <alpha-value>)',
+          card: 'rgb(var(--bg-card) / <alpha-value>)',
         },
         accent: {
-          blue: '#2563EB',
-          cyan: '#06B6D4',
+          blue: 'rgb(var(--accent-blue) / <alpha-value>)',
+          cyan: 'rgb(var(--accent-cyan) / <alpha-value>)',
           glow: '#3B82F6',
         },
         text: {
-          primary: '#F0F6FF',
-          secondary: '#94A3B8',
-          muted: '#475569',
+          primary: 'rgb(var(--text-primary) / <alpha-value>)',
+          secondary: 'rgb(var(--text-secondary) / <alpha-value>)',
+          muted: 'rgb(var(--text-muted) / <alpha-value>)',
         },
+        fg: 'rgb(var(--fg) / <alpha-value>)',
       },
       backgroundImage: {
         'grid-pattern': "linear-gradient(rgba(37,99,235,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(37,99,235,0.05) 1px, transparent 1px)",
@@ -55,7 +57,7 @@ module.exports = {
       boxShadow: {
         'glow': '0 0 30px rgba(37,99,235,0.3)',
         'glow-sm': '0 0 15px rgba(37,99,235,0.2)',
-        'card': '0 4px 40px rgba(0,0,0,0.4)',
+        'card': '0 4px 40px rgb(var(--shadow) / 0.12)',
       },
     },
   },

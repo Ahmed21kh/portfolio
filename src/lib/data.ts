@@ -4,19 +4,19 @@ export const personalInfo = {
   subtitle: "Angular & React",
   location: "Cairo, Egypt",
   phone1: "+201020696230",
-  phone2: "+201145626326",
+  phone2: "+201223269063",
   email: "ah20192344@gmail.com", // replace with real email
   linkedin: "https://www.linkedin.com/in/ahmed-khaled-018ba3233/", // replace
   github: "https://github.com/Ahmed21kh", // replace
   summary:
-    "Senior Frontend Developer with 4 years of experience building scalable ERP dashboards and e-commerce web applications using Angular and React. Strong expertise in frontend architecture, state management, and performance optimization. Experienced in delivering production-ready solutions for high-usage internal systems and remote teams.",
+    "Senior Frontend Developer with +4 years of experience building scalable ERP dashboards and e-commerce web applications using Angular and React. Strong expertise in frontend architecture, state management, and performance optimization. Experienced in delivering production-ready solutions for high-usage internal systems and remote teams.",
 };
 
 export const skills = [
   {
-    category: "Frontend Frameworks",
+    category: "Frontend",
     icon: "🧩",
-    items: ["Angular", "React.js", "Next.js", "Vue.js"],
+    items: ["Angular", "React.js", "Next.js", "Vue.js", "TypeScript", "JavaScript (ES6+)", "HTML5", "CSS3", "Sass"],
   },
   {
     category: "State Management",
@@ -24,54 +24,68 @@ export const skills = [
     items: ["NgRx", "Redux Toolkit"],
   },
   {
-    category: "UI Libraries",
+    category: "UI & Styling",
     icon: "🎨",
-    items: ["Angular Material", "Ng-Zorro", "Ant Design", "MUI", "Tailwind CSS", "Bootstrap"],
+    items: ["Angular Material", "NG-ZORRO", "Ant Design", "MUI", "Tailwind CSS", "Bootstrap"],
   },
   {
-    category: "Languages",
-    icon: "💻",
-    items: ["TypeScript", "JavaScript (ES6+)", "HTML5", "CSS3", "Sass", "Python"],
+    category: "Backend & APIs",
+    icon: "🔌",
+    items: ["Node.js", "Express.js", "RESTful APIs", "WebSocket"],
   },
   {
-    category: "Backend & Databases",
+    category: "Databases",
     icon: "🗄️",
-    items: ["Node.js", "Express.js", "MongoDB", "MySQL", ".Net Core", "SQL Server", "Firebase"],
+    items: ["MongoDB", "MySQL", "SQL Server", "Firebase"],
   },
   {
     category: "Tools & DevOps",
     icon: "🛠️",
-    items: ["Git", "GitHub", "GitHub Actions", "WebSocket"],
+    items: ["Git", "GitHub", "GitHub Actions", "Vercel"],
+  },
+  {
+    category: "Architecture",
+    icon: "🏗️",
+    items: ["Scalable Frontend Architecture", "Reusable Components", "Modular Design", "Performance Optimization"],
+  },
+  {
+    category: "Engineering Practices",
+    icon: "✅",
+    items: ["Responsive Design", "Cross-Browser Compatibility", "Code Reviews", "API Integration"],
   },
 ];
 
 export const experiences = [
   {
     title: "Senior Frontend Developer — Angular",
-    company: "MAIDS.CC",
-    type: "Remote",
-    period: "Jun 2024 – Jan 2026",
+    company: "ALASI Real Estate",
+    type: "Hybrid",
+    period: "Jan 2026 – Present",
     current: true,
     points: [
-      "Enhanced scalable ERP dashboards using Angular for complex internal business operations.",
-      "Optimized frontend architecture through component refactoring and efficient state management.",
-      "Implemented complex business logic, reusable components, and reactive forms.",
-      "Integrated RESTful APIs and real-time data handling for dynamic application behavior.",
-      "Collaborated with cross-functional remote teams to deliver maintainable, high-performance solutions.",
+      "Developed and maintained large-scale dashboards using Angular for complex business operations.",
     ],
   },
   {
-    title: "Frontend Developer — React & Angular",
+    title: "Senior Frontend Developer — Angular",
+    company: "MAIDS.CC",
+    type: "Remote",
+    period: "Jun 2024 – Jan 2026",
+    current: false,
+    points: [
+      "Enhanced scalable ERP dashboards and optimized architecture, state management, reusable components, and reactive forms.",
+      "Integrated RESTful APIs and real-time data while collaborating with remote teams to deliver maintainable, high-performance applications.",
+    ],
+  },
+  {
+    title: "Frontend Developer — React, Angular & Node.js",
     company: "MEGA DEV",
-    type: "On-site",
+    type: "",
     period: "Oct 2022 – Jun 2024",
     current: false,
     points: [
-      "Built responsive web applications and dashboards using React and Angular across multiple industries.",
-      "Designed and maintained scalable frontend architecture with reusable UI components.",
-      "Managed complex application state using Redux Toolkit and NgRx.",
-      "Integrated RESTful APIs and real-time data handling.",
-      "Ensured cross-browser compatibility and consistent user experience.",
+      "Built responsive React and Angular web applications and dashboards with scalable, reusable frontend architecture.",
+      "Integrated RESTful APIs and real-time data, ensuring cross-browser compatibility and a consistent user experience.",
     ],
   },
 ];

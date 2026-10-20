@@ -10,13 +10,13 @@ export default function Experience() {
   const [expanded, setExpanded] = useState<number | null>(0)
 
   return (
-    <section id="experience" className="relative py-28 px-6 z-10">
+    <section id="experience" className="relative py-14 px-6 z-10">
       <div className="max-w-6xl mx-auto" ref={ref}>
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={inView ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.5 }}
-          className="flex items-center gap-3 mb-16"
+          className="flex items-center gap-3 mb-10"
         >
           <span className="font-mono text-accent-blue text-sm tracking-widest">03.</span>
           <h2 className="font-display font-bold text-3xl sm:text-4xl text-text-primary">Experience</h2>
@@ -54,7 +54,7 @@ export default function Experience() {
                   className={`rounded-2xl border transition-all duration-300 overflow-hidden ${
                     expanded === i
                       ? 'border-accent-blue/30 bg-bg-card shadow-glow-sm'
-                      : 'border-white/5 bg-bg-card/60 hover:border-white/10'
+                      : 'border-fg/5 bg-bg-card/60 hover:border-fg/10'
                   }`}
                 >
                   {/* Header */}
@@ -75,10 +75,12 @@ export default function Experience() {
                       </div>
                       <div className="flex flex-wrap items-center gap-4 text-text-muted text-sm">
                         <span className="font-semibold text-text-secondary">{exp.company}</span>
-                        <span className="flex items-center gap-1">
-                          <FiMapPin size={12} />
-                          {exp.type}
-                        </span>
+                        {exp.type && (
+                          <span className="flex items-center gap-1">
+                            <FiMapPin size={12} />
+                            {exp.type}
+                          </span>
+                        )}
                         <span className="flex items-center gap-1">
                           <FiCalendar size={12} />
                           {exp.period}

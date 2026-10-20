@@ -16,7 +16,7 @@ export default function Projects() {
     : projects.filter(p => p.category === activeCategory)
 
   return (
-    <section id="projects" className="relative py-28 px-6 z-10">
+    <section id="projects" className="relative py-14 px-6 z-10">
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-accent-blue/3 to-transparent pointer-events-none" />
 
       <div className="max-w-6xl mx-auto" ref={ref}>
@@ -45,7 +45,7 @@ export default function Projects() {
               className={`px-4 py-1.5 rounded-full text-xs font-mono tracking-wide transition-all duration-200 ${
                 activeCategory === cat
                   ? 'bg-accent-blue text-white shadow-glow-sm'
-                  : 'bg-bg-card border border-white/10 text-text-muted hover:text-text-primary hover:border-white/20'
+                  : 'bg-bg-card border border-fg/10 text-text-muted hover:text-text-primary hover:border-fg/20'
               }`}
             >
               {cat}
@@ -64,7 +64,7 @@ export default function Projects() {
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.3, delay: i * 0.07 }}
               whileHover={{ y: -5 }}
-              className="group relative p-6 rounded-2xl bg-bg-card border border-white/5 hover:border-accent-blue/30 hover:shadow-glow-sm transition-all duration-100 flex flex-col"
+              className="group relative p-6 rounded-2xl bg-bg-card border border-fg/10 shadow-card hover:border-accent-blue/30 hover:shadow-glow-sm transition-all duration-100 flex flex-col"
             >
               {/* Top row */}
               <div className="flex items-start justify-between mb-4">
@@ -72,7 +72,7 @@ export default function Projects() {
                   <FiFolder className="text-accent-blue" size={18} />
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-text-muted font-mono text-xs">
+                  <span className="px-2 py-0.5 rounded-full bg-fg/5 border border-fg/10 text-text-muted font-mono text-xs">
                     {project.category}
                   </span>
                   {project.link && project.link !== '#' && (

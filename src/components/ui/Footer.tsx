@@ -4,7 +4,7 @@ import { personalInfo } from '@/lib/data'
 
 export default function Footer() {
   return (
-    <footer className="relative z-10 border-t border-white/5 py-8 px-6">
+    <footer className="relative z-10 border-t border-fg/5 py-8 px-6">
       <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
         <motion.p
           initial={{ opacity: 0 }}

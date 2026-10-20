@@ -8,7 +8,7 @@ export default function Skills() {
   const inView = useInView(ref, { once: true, margin: '-80px' })
 
   return (
-    <section id="skills" className="relative py-28 px-6 z-10">
+    <section id="skills" className="relative py-14 px-6 z-10">
       {/* Background accent */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-accent-blue/3 to-transparent pointer-events-none" />
 
@@ -17,14 +17,14 @@ export default function Skills() {
           initial={{ opacity: 0, x: -20 }}
           animate={inView ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.5 }}
-          className="flex items-center gap-3 mb-16"
+          className="flex items-center gap-3 mb-10"
         >
           <span className="font-mono text-accent-blue text-sm tracking-widest">02.</span>
           <h2 className="font-display font-bold text-3xl sm:text-4xl text-text-primary">Skills</h2>
           <div className="flex-1 h-px bg-gradient-to-r from-accent-blue/30 to-transparent ml-4" />
         </motion.div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {skills.map((skill, i) => (
             <motion.div
               key={skill.category}
@@ -32,7 +32,7 @@ export default function Skills() {
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.3, delay: i * 0.08 }}
               whileHover={{ y: -4, borderColor: 'rgba(37,99,235,0.5)' }}
-              className="p-6 rounded-2xl bg-bg-card border border-white/5 transition-all duration-100 group"
+              className="p-6 rounded-2xl bg-bg-card border border-fg/10 shadow-card hover:shadow-glow-sm transition-all duration-100 group"
             >
               {/* Header */}
               <div className="flex items-center gap-3 mb-4">

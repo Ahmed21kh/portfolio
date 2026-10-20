@@ -1,5 +1,6 @@
 'use client'
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 import { personalInfo } from '@/lib/data'
 import { FiGithub, FiLinkedin, FiArrowDown, FiDownload } from 'react-icons/fi'
 
@@ -28,6 +29,21 @@ export default function Hero() {
         animate="show"
         className="max-w-4xl mx-auto text-center"
       >
+        {/* Avatar */}
+        <motion.div variants={item} className="relative mx-auto mb-8 w-36 h-36 sm:w-44 sm:h-44">
+          <div className="absolute -inset-1.5 rounded-full bg-gradient-to-tr from-accent-blue to-accent-cyan opacity-80 blur-sm animate-pulse-slow" />
+          <div className="relative w-full h-full rounded-full overflow-hidden border-4 border-bg-primary">
+            <Image
+              src="/profile.jpg"
+              alt={personalInfo.name}
+              fill
+              priority
+              sizes="176px"
+              className="object-cover object-top"
+            />
+          </div>
+        </motion.div>
+
         {/* Badge */}
         <motion.div variants={item} className="inline-flex items-center gap-2 mb-8">
           <span className="relative flex h-2 w-2">
@@ -39,12 +55,17 @@ export default function Hero() {
           </span>
         </motion.div>
 
+        {/* Current role */}
+        <motion.p variants={item} className="mb-6 -mt-4 text-text-muted font-mono text-xs tracking-wide">
+          Currently @ <span className="text-text-secondary">ALASI Real Estate</span>
+        </motion.p>
+
         {/* Name */}
         <motion.h1
           variants={item}
           className="font-display font-extrabold text-5xl sm:text-7xl md:text-8xl leading-[0.95] tracking-tight mb-6"
         >
-          <span className="text-gradient">{personalInfo.name}</span>
+          <span className="text-gradient-animated">{personalInfo.name}</span>
         </motion.h1>
 
         {/* Title */}
@@ -79,7 +100,7 @@ export default function Hero() {
             href="#contact"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.97 }}
-            className="px-8 py-3.5 rounded-full border border-white/15 text-text-primary font-body font-medium text-sm tracking-wide hover:border-accent-blue/50 hover:bg-accent-blue/5 transition-all"
+            className="px-8 py-3.5 rounded-full border border-fg/20 text-text-primary font-body font-medium text-sm tracking-wide hover:border-accent-blue/50 hover:bg-accent-blue/5 transition-all backdrop-blur"
           >
             Get In Touch
           </motion.a>
@@ -106,14 +127,14 @@ export default function Hero() {
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              whileHover={{ scale: 1.15, color: '#2563EB' }}
+              whileHover={{ scale: 1.15 }}
               className="text-text-muted hover:text-accent-blue transition-colors duration-200 p-2"
               aria-label={label}
             >
               <Icon size={22} />
             </motion.a>
           ))}
-          <div className="w-px h-5 bg-white/10" />
+          <div className="w-px h-5 bg-fg/10" />
           <span className="text-text-muted font-mono text-xs">{personalInfo.location}</span>
         </motion.div>
       </motion.div>
@@ -123,7 +144,7 @@ export default function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.5 }}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+        className="mt-12 flex flex-col items-center gap-2"
       >
         <span className="text-text-muted font-mono text-xs tracking-widest uppercase">Scroll</span>
         <motion.div

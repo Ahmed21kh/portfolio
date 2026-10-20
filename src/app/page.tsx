@@ -12,7 +12,7 @@ export default function Home() {
     <main className="relative min-h-screen bg-bg-primary">
       {/* Global background grid */}
       <div
-        className="fixed inset-0 bg-grid-pattern bg-grid pointer-events-none z-0"
+        className="fixed inset-0 bg-grid-pattern bg-grid pointer-events-none z-0 [mask-image:radial-gradient(ellipse_at_top,black,transparent_75%)]"
         style={{ backgroundSize: '60px 60px' }}
       />
       {/* Hero radial glow */}
