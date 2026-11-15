@@ -1,9 +1,11 @@
 'use client'
+
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion'
 import ThemeToggle from '@/components/ui/ThemeToggle'
-import { navLinks } from '@/lib/data'
+import { navLinks, personalInfo } from '@/lib/data'
 import Image from 'next/image'
+import { FiDownload, FiArrowRight } from 'react-icons/fi'
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
@@ -38,13 +40,12 @@ export default function Navbar() {
 
   const handleNavClick = (href: string) => {
     setMenuOpen(false)
-    // ── Wait for menu close animation to finish before scrolling ──
     setTimeout(() => {
       const target = document.querySelector(href)
       if (target) {
         target.scrollIntoView({ behavior: 'smooth' })
       }
-    }, 320) // matches the AnimatePresence exit duration
+    }, 320)
   }
 
   return (
@@ -54,130 +55,166 @@ export default function Navbar() {
       transition={{ duration: 0.6, ease: 'easeOut' }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
-          ? 'py-3 bg-bg-primary/80 backdrop-blur-xl border-b border-fg/5 shadow-card'
-          : 'py-6'
+          ? 'py-3.5 bg-bg-primary/85 backdrop-blur-xl border-b border-fg/10 shadow-card'
+          : 'py-5'
       }`}
     >
       <nav className="max-w-6xl mx-auto px-6 flex items-center justify-between">
-        {/* Logo */}
+        {/* Logo & Name Brand */}
         <motion.a
           href="#"
-          className="font-display font-bold text-xl tracking-tight"
-          whileHover={{ scale: 1.03 }}
+          className="flex items-center gap-2.5 group"
+          whileHover={{ scale: 1.02 }}
         >
-          {/* <span className="text-gradient">AK</span>
-          <span className="text-text-secondary text-sm font-body font-normal ml-2 hidden sm:inline">
-            / dev
-          </span> */}
-          <Image src={'/logo.svg'} alt='logo' width={45} height={45} />
+          <div className="relative w-9 h-9 rounded-xl overflow-hidden border border-fg/10 bg-bg-card flex items-center justify-center shadow-sm">
+            <Image src={'/logo.svg'} alt="Ahmed Khaled" width={32} height={32} className="object-contain" />
+          </div>
+          <div className="flex flex-col">
+            <span className="font-display font-extrabold text-sm sm:text-base tracking-tight text-text-primary group-hover:text-accent-blue transition-colors">
+              {personalInfo.name}
+            </span>
+            <span className="font-mono text-[10px] text-accent-blue font-medium leading-none">
+              Frontend Architect
+            </span>
+          </div>
         </motion.a>
 
-        {/* Desktop Nav */}
-        <ul className="hidden md:flex items-center gap-8">
-          {navLinks.map((link, i) => (
-            <motion.li
-              key={link.href}
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 * i + 0.3 }}
-            >
-              <a
-                href={link.href}
-                onClick={() => setActive(link.href)}
-                className={`relative text-sm font-body font-medium tracking-wide transition-colors duration-200 group ${
-                  active === link.href ? 'text-accent-blue' : 'text-text-secondary hover:text-text-primary'
-                }`}
+        {/* Desktop Nav Links */}
+        <ul className="hidden md:flex items-center gap-7 bg-bg-card/60 backdrop-blur-md px-5 py-2 rounded-full border border-fg/10 shadow-sm">
+          {navLinks.map((link, i) => {
+            const isActive = active === link.href
+            return (
+              <motion.li
+                key={link.href}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.08 * i + 0.2 }}
               >
-                {link.label}
-                <span className={`absolute -bottom-1 left-0 h-px bg-accent-blue group-hover:w-full transition-all duration-300 ${active === link.href ? 'w-full' : 'w-0'}`} />
-              </a>
-            </motion.li>
-          ))}
+                <a
+                  href={link.href}
+                  onClick={() => setActive(link.href)}
+                  className={`relative text-xs font-mono font-medium tracking-wide transition-colors duration-200 py-1 ${
+                    isActive ? 'text-accent-blue font-semibold' : 'text-text-secondary hover:text-text-primary'
+                  }`}
+                >
+                  {link.label}
+                  {isActive && (
+                    <motion.span
+                      layoutId="navPill"
+                      className="absolute -bottom-1 left-0 right-0 h-0.5 bg-accent-blue rounded-full shadow-glow-sm"
+                    />
+                  )}
+                </a>
+              </motion.li>
+            )
+          })}
         </ul>
 
+        {/* Right CTA Actions */}
         <div className="hidden md:flex items-center gap-3">
-        <ThemeToggle />
-        {/* CTA */}
-        <motion.a
-          href="#contact"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.97 }}
-          className="hidden md:flex items-center gap-2 px-5 py-2.5 rounded-full bg-accent-blue text-white text-sm font-medium font-body shadow-glow-sm hover:shadow-glow transition-all duration-300"
-        >
-          Hire Me
-        </motion.a>
+          <ThemeToggle />
+
+          {/* Download CV button */}
+          <a
+            href="/Ahmed_Khaled_CV.pdf"
+            download="Ahmed_Khaled_CV.pdf"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-fg/15 hover:border-accent-blue/40 text-text-secondary hover:text-accent-blue text-xs font-mono transition-all"
+            title="Download CV"
+          >
+            <FiDownload size={13} />
+            <span>CV</span>
+          </a>
+
+          {/* Hire Me CTA */}
+          <motion.a
+            href="#contact"
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.97 }}
+            className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-accent-blue text-white text-xs font-medium font-body shadow-glow-sm hover:shadow-glow transition-all duration-300"
+          >
+            <span>Hire Me</span>
+            <FiArrowRight size={12} />
+          </motion.a>
         </div>
 
-        {/* Mobile Toggle */}
-        <div className="md:hidden flex items-center gap-1">
-        <ThemeToggle />
-        <button
-          className="flex flex-col gap-1.5 p-2"
-          onClick={() => setMenuOpen(!menuOpen)}
-          aria-label="Toggle menu"
-        >
-          <motion.span
-            animate={menuOpen ? { rotate: 45, y: 8 } : { rotate: 0, y: 0 }}
-            className="block w-6 h-0.5 bg-text-primary origin-center transition-all"
-          />
-          <motion.span
-            animate={menuOpen ? { opacity: 0 } : { opacity: 1 }}
-            className="block w-6 h-0.5 bg-text-primary"
-          />
-          <motion.span
-            animate={menuOpen ? { rotate: -45, y: -8 } : { rotate: 0, y: 0 }}
-            className="block w-6 h-0.5 bg-text-primary origin-center transition-all"
-          />
-        </button>
+        {/* Mobile Nav Toggle */}
+        <div className="md:hidden flex items-center gap-2">
+          <ThemeToggle />
+          <button
+            className="flex flex-col gap-1.5 p-2 rounded-lg bg-bg-card border border-fg/10 text-text-primary"
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Toggle menu"
+          >
+            <motion.span
+              animate={menuOpen ? { rotate: 45, y: 8 } : { rotate: 0, y: 0 }}
+              className="block w-5 h-0.5 bg-current origin-center transition-all"
+            />
+            <motion.span
+              animate={menuOpen ? { opacity: 0 } : { opacity: 1 }}
+              className="block w-5 h-0.5 bg-current"
+            />
+            <motion.span
+              animate={menuOpen ? { rotate: -45, y: -8 } : { rotate: 0, y: 0 }}
+              className="block w-5 h-0.5 bg-current origin-center transition-all"
+            />
+          </button>
         </div>
       </nav>
 
-      {/* Scroll progress */}
+      {/* Progress Line */}
       <motion.div
         style={{ scaleX: progress }}
-        className="absolute bottom-0 left-0 right-0 h-0.5 origin-left bg-gradient-to-r from-accent-blue to-accent-cyan"
+        className="absolute bottom-0 left-0 right-0 h-0.5 origin-left bg-gradient-to-r from-accent-blue via-accent-cyan to-accent-blue"
       />
 
-      {/* Mobile Menu */}
+      {/* Mobile Drawer Menu */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden border-t border-fg/5 bg-bg-primary/95 backdrop-blur-xl"
+            className="md:hidden border-t border-fg/10 bg-bg-card/95 backdrop-blur-2xl shadow-xl overflow-hidden"
           >
-            <ul className="flex flex-col px-6 py-4 gap-4">
-              {navLinks.map((link) => (
-                <li key={link.href}>
-                  <a
-                    href={link.href}
-                    onClick={(e) => {
-                      e.preventDefault()
-                      handleNavClick(link.href)
-                    }}
-                    className="block text-text-secondary hover:text-text-primary py-2 font-body text-sm tracking-wide transition-colors"
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-              <li>
+            <div className="px-6 py-5 space-y-4">
+              <ul className="space-y-2">
+                {navLinks.map((link) => (
+                  <li key={link.href}>
+                    <a
+                      href={link.href}
+                      onClick={(e) => {
+                        e.preventDefault()
+                        handleNavClick(link.href)
+                      }}
+                      className="block text-text-secondary hover:text-accent-blue py-2 font-mono text-sm tracking-wide transition-colors"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="pt-3 border-t border-fg/10 flex flex-col gap-2.5">
+                <a
+                  href="/Ahmed_Khaled_CV.pdf"
+                  download="Ahmed_Khaled_CV.pdf"
+                  className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl border border-accent-blue/30 text-accent-blue font-mono text-xs font-semibold text-center"
+                >
+                  <FiDownload size={13} />
+                  <span>Download CV</span>
+                </a>
                 <a
                   href="#contact"
                   onClick={(e) => {
                     e.preventDefault()
                     handleNavClick('#contact')
                   }}
-                  className="block text-center px-5 py-2.5 rounded-full bg-accent-blue text-white text-sm font-medium mt-2"
+                  className="block text-center py-2.5 rounded-xl bg-accent-blue text-white text-xs font-semibold shadow-glow-sm"
                 >
                   Hire Me
                 </a>
-              </li>
-            </ul>
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

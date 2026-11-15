@@ -14,44 +14,108 @@ export const personalInfo = {
 
 export const skills = [
   {
-    category: "Frontend",
+    category: "Frontend & Mobile",
     icon: "🧩",
-    items: ["Angular", "React.js", "Next.js", "Vue.js", "TypeScript", "JavaScript (ES6+)", "HTML5", "CSS3", "Sass"],
+    items: [
+      "Angular (14+)",
+      "React.js",
+      "Next.js",
+      "Ionic Framework",
+      "TypeScript",
+      "JavaScript (ES6+)",
+      "HTML5",
+      "CSS3 / Sass",
+      "Vue.js",
+    ],
   },
   {
     category: "State Management",
     icon: "⚙️",
-    items: ["NgRx", "Redux Toolkit"],
+    items: [
+      "NgRx (Store & Effects)",
+      "Redux Toolkit",
+      "RxJS (Reactive Programming)",
+      "Angular Signals",
+      "Zustand",
+      "Context API",
+    ],
+  },
+  {
+    category: "Architecture & Performance",
+    icon: "🏗️",
+    items: [
+      "Scalable Frontend Architecture",
+      "Micro-frontends (Module Federation)",
+      "Design Systems & Reusable Components",
+      "Core Web Vitals & Web Performance",
+      "Code Splitting & Lazy Loading",
+      "SSR / SSG Hydration",
+    ],
   },
   {
     category: "UI & Styling",
     icon: "🎨",
-    items: ["Angular Material", "NG-ZORRO", "Ant Design", "MUI", "Tailwind CSS", "Bootstrap"],
+    items: [
+      "Tailwind CSS",
+      "Angular Material",
+      "NG-ZORRO",
+      "Ant Design",
+      "MUI (Material UI)",
+      "Bootstrap",
+      "RTL-First Design",
+      "Web Accessibility (WCAG / a11y)",
+    ],
+  },
+  {
+    category: "Testing & Code Quality",
+    icon: "🧪",
+    items: [
+      "Unit Testing",
+      "Jest",
+      "Cypress",
+      "Frontend Security (JWT, OAuth, XSS/CSRF)",
+      "Code Reviews & Standards",
+      "Cross-Browser Compatibility",
+    ],
+  },
+  {
+    category: "DevOps & CI/CD",
+    icon: "🛠️",
+    items: [
+      "CI/CD Pipelines",
+      "GitHub Actions",
+      "Git & Git Flow",
+      "Vercel Deployment",
+      "Docker Basics",
+      "Vite & Webpack",
+    ],
   },
   {
     category: "Backend & APIs",
     icon: "🔌",
-    items: ["Node.js", "Express.js", "RESTful APIs", "WebSocket"],
+    items: [
+      "RESTful APIs Integration",
+      "WebSocket (Real-time updates)",
+      "HTTP Interceptors",
+      "Node.js",
+      "Express.js",
+    ],
   },
   {
-    category: "Databases",
+    category: "Databases & Cloud",
     icon: "🗄️",
     items: ["MongoDB", "MySQL", "SQL Server", "Firebase"],
   },
   {
-    category: "Tools & DevOps",
-    icon: "🛠️",
-    items: ["Git", "GitHub", "GitHub Actions", "Vercel"],
-  },
-  {
-    category: "Architecture",
-    icon: "🏗️",
-    items: ["Scalable Frontend Architecture", "Reusable Components", "Modular Design", "Performance Optimization"],
-  },
-  {
-    category: "Engineering Practices",
-    icon: "✅",
-    items: ["Responsive Design", "Cross-Browser Compatibility", "Code Reviews", "API Integration"],
+    category: "Methodology & Agile",
+    icon: "🚀",
+    items: [
+      "Agile & Scrum Methodologies",
+      "Sprint Planning & Jira",
+      "Cross-functional Remote Teams",
+      "Technical Mentorship",
+      "Performance Auditing (Lighthouse)",
+    ],
   },
 ];
 
@@ -90,69 +154,136 @@ export const experiences = [
   },
 ];
 
-export const projects = [
+export interface Project {
+  id: string;
+  name: string;
+  tech: string[];
+  period: string;
+  description: string;
+  link: string;
+  category: string;
+  featured?: boolean;
+  hasLiveDemo?: boolean;
+  highlights?: string[];
+}
+
+export const projects: Project[] = [
   {
+    id: "shatib-finishes",
+    name: "Shatib (شطب) — Invoicing & Accounting",
+    tech: ["React.js", "Tailwind CSS", "Accounting", "RTL", "Vite"],
+    period: "2024",
+    description:
+      "Comprehensive financial accounting and invoicing web application tailored for contractor management, expense tracking, invoices, and client billing with an RTL interface.",
+    link: "https://finishes-app.vercel.app/",
+    category: "ERP",
+    featured: true,
+    hasLiveDemo: true,
+    highlights: ["Invoicing & ledger calculations", "Interactive financial dashboard", "Full RTL & mobile-responsive design"],
+  },
+  {
+    id: "pdf-to-word",
+    name: "Arabic PDF to Word Converter",
+    tech: ["React.js", "TypeScript", "PDF Processing", "Document Parser", "Tailwind"],
+    period: "2024",
+    description:
+      "Specialized document conversion platform converting complex Arabic PDFs to Word (.docx) with Quranic verse verification, zero letter-reversal, and support for 600+ pages.",
+    link: "https://pdf-to-word-converter-tool.vercel.app/",
+    category: "Tools",
+    featured: true,
+    hasLiveDemo: true,
+    highlights: ["High-precision Arabic OCR & parsing", "Layout, table & image preservation", "Multi-page large document engine"],
+  },
+  {
+    id: "chatcc-erp",
     name: "Chatcc — ERP Dashboard",
-    tech: ["Angular", "RxJS", "RESTful APIs"],
+    tech: ["Angular", "RxJS", "RESTful APIs", "WebSocket"],
     period: "Jun 2024 – Jan 2026",
     description:
-      "Developed scalable, high-performance Angular modules for an ERP dashboard. Integrated complex business logic and RESTful APIs with real-time updates. Collaborated with cross-functional teams to enhance usability and operational efficiency.",
+      "Enterprise-grade, high-performance Angular modules for an ERP dashboard. Integrated complex business logic, reactive state, and RESTful APIs with real-time updates.",
     link: "https://erp.maids.cc/chatcc",
     category: "ERP",
+    featured: true,
+    hasLiveDemo: true,
+    highlights: ["Real-time synchronization", "Enterprise RBAC architecture", "High-throughput tables"],
   },
   {
+    id: "maqraaty",
     name: "Mqraaty Dashboard",
-    tech: ["Angular", "CRUD", "Progress Tracking"],
+    tech: ["Angular", "CRUD", "Progress Tracking", "Tailwind CSS"],
     period: "Jan 2024 – May 2024",
     description:
-      "Management system for educational tracks with full CRUD operations and progress tracking.",
+      "Interactive management platform for educational tracks with full CRUD operations, student progress analytics, and responsive student/mentor dashboards.",
     link: "https://maqraaty.vercel.app/",
     category: "Education",
+    featured: true,
+    hasLiveDemo: true,
+    highlights: ["Full CRUD workflows", "Progress analytics charts", "Mobile-optimized responsive UI"],
   },
   {
-    name: "Rabeh Driver Management",
-    tech: ["React.js", "Redux", "Dashboard"],
-    period: "Oct 2023 – Dec 2023",
-    description:
-      "Built a specialized dashboard for managing driver logistics and schedules using React.",
-    link: "#",
-    category: "Logistics",
-  },
-  {
+    id: "beirutmart",
     name: "Beirutmart E-commerce",
-    tech: ["React.js", "Redux Toolkit", "Cart System"],
+    tech: ["React.js", "Redux Toolkit", "Cart System", "Tailwind"],
     period: "Apr 2023 – Jun 2023",
     description:
-      "Fully functional shopping and delivery website with state-managed cart and checkout systems.",
+      "Fully functional shopping and delivery web application with persistent state-managed cart, checkout systems, order tracking, and product search.",
     link: "https://beirutmart.com/",
     category: "E-commerce",
+    featured: true,
+    hasLiveDemo: true,
+    highlights: ["Redux Toolkit state store", "Instant filter & search", "Seamless checkout flow"],
   },
   {
+    id: "laporex",
     name: "Laporex — Medication Orders",
-    tech: ["React.js", "RESTful APIs", "Real-time"],
+    tech: ["React.js", "RESTful APIs", "Real-time", "Vite"],
     period: "Jan 2023 – Mar 2023",
     description:
-      "High-performance React app for managing medication orders with real-time updates. Integrated RESTful APIs to streamline order workflows. Built responsive, dynamic interfaces with optimized forms, tables, and notifications.",
+      "High-performance React application for managing pharmaceutical and medication orders with instant status updates and optimized reactive forms.",
     link: "https://laporex.vercel.app/",
     category: "Healthcare",
+    featured: true,
+    hasLiveDemo: true,
+    highlights: ["Real-time order statuses", "Dynamic reactive forms", "High-volume data tables"],
   },
   {
-    name: "Doctor Book Web App",
-    tech: ["Angular", "RxJS", "Reactive Forms"],
-    period: "Oct 2022 – Dec 2022",
-    description:
-      "Built responsive Angular web app and admin dashboard. Implemented appointment booking, rescheduling, and cancellation workflows. Developed role-based dashboards with route guards and permissions.",
-    link: "#",
-    category: "Healthcare",
-  },
-  {
+    id: "el-hamd",
     name: "El Hamd Agricultural Crops",
-    tech: ["React.js", "Corporate Website", "Product Catalog"],
+    tech: ["React.js", "Corporate Showcase", "Product Catalog"],
     period: "Jul 2023 – Sep 2023",
     description:
-      "Developed a full corporate website and product catalog for the agricultural sector. Features a modern landing page, product showcase, and responsive design built with React.js.",
+      "Full corporate website and bilingual product catalog for the agricultural sector. Features modern landing animations, product showcases, and fast response times.",
     link: "https://el-hamd-front.vercel.app/home",
     category: "ERP",
+    featured: false,
+    hasLiveDemo: true,
+    highlights: ["Interactive product catalog", "Responsive modern design", "Optimized image delivery"],
+  },
+  {
+    id: "rabeh-driver",
+    name: "Rabeh Driver Management",
+    tech: ["React.js", "Redux", "Logistics Dashboard"],
+    period: "Oct 2023 – Dec 2023",
+    description:
+      "Specialized internal enterprise dashboard for managing driver logistics, schedules, routing, and fleet analytics using React and Redux.",
+    link: "#",
+    category: "Logistics",
+    featured: false,
+    hasLiveDemo: false,
+    highlights: ["Fleet scheduling engine", "Internal driver tracking", "Enterprise dashboard UI"],
+  },
+  {
+    id: "doctor-book",
+    name: "Doctor Book Web App",
+    tech: ["Angular", "RxJS", "Reactive Forms", "Guards"],
+    period: "Oct 2022 – Dec 2022",
+    description:
+      "Responsive Angular medical appointment platform. Implemented appointment scheduling, patient histories, cancellation workflows, and role-based route guards.",
+    link: "#",
+    category: "Healthcare",
+    featured: false,
+    hasLiveDemo: false,
+    highlights: ["Appointment calendar engine", "Route guards & security", "Reactive patient records"],
   },
 ];
 
@@ -164,7 +295,7 @@ export const education = {
 
 export const languages = [
   { name: "Arabic", level: "Native" },
-  { name: "English", level: "Intermediate" },
+  { name: "English", level: "Advanced" },
 ];
 
 export const navLinks = [
