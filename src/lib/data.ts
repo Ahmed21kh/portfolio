@@ -1,7 +1,7 @@
 export const personalInfo = {
   name: "Ahmed Khaled",
   title: "Senior Frontend Developer",
-  subtitle: "Angular & React",
+  subtitle: "Angular, React & Next.js",
   location: "Cairo, Egypt",
   phone1: "+201020696230",
   phone2: "+201223269063",
