@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion'
+import RollText from '@/components/ui/RollText'
 import ThemeToggle from '@/components/ui/ThemeToggle'
 import { navLinks, personalInfo } from '@/lib/data'
 import Image from 'next/image'
@@ -118,23 +119,21 @@ export default function Navbar() {
           <a
             href="/Ahmed_Khaled_CV.pdf"
             download="Ahmed_Khaled_CV.pdf"
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-fg/15 hover:border-accent-blue/40 text-text-secondary hover:text-accent-blue text-xs font-mono transition-all"
+            className="btn-fill flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-fg/15 text-text-secondary text-xs font-mono transition-colors"
             title="Download CV"
           >
-            <FiDownload size={13} />
-            <span>CV</span>
+            <FiDownload size={13} className="nudge-y" />
+            <RollText>CV</RollText>
           </a>
 
           {/* Hire Me CTA */}
-          <motion.a
+          <a
             href="#contact"
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.97 }}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-accent-blue text-white text-xs font-medium font-body shadow-glow-sm hover:shadow-glow transition-all duration-300"
+            className="btn-shine flex items-center gap-1.5 px-4 py-2 rounded-full bg-accent-blue text-white text-xs font-medium font-body shadow-glow-sm hover:shadow-glow hover:scale-[1.04] active:scale-[0.97] transition-[transform,box-shadow] duration-300"
           >
-            <span>Hire Me</span>
-            <FiArrowRight size={12} />
-          </motion.a>
+            <RollText>Hire Me</RollText>
+            <FiArrowRight size={12} className="nudge-x" />
+          </a>
         </div>
 
         {/* Mobile Nav Toggle */}

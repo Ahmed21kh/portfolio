@@ -168,15 +168,120 @@ body {
   }
 }
 
+/* ============================================================
+   Button hover micro-interactions
+   ============================================================ */
+
+/* Shine: a light sheen sweeps across the button */
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.btn-shine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(115deg, transparent 30%, rgb(255 255 255 / 0.35) 50%, transparent 70%);
+  transform: translateX(-120%) skewX(-12deg);
+  transition: transform 0.75s cubic-bezier(0.65, 0, 0.35, 1);
+  pointer-events: none;
+}
+.btn-shine:hover::after {
+  transform: translateX(120%) skewX(-12deg);
+}
+
+/* Fill: outline button floods with accent colour from the bottom */
+.btn-fill {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.btn-fill::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgb(var(--accent-blue));
+  border-radius: inherit;
+  transform: translateY(101%);
+  transition: transform 0.45s cubic-bezier(0.7, 0, 0.2, 1);
+}
+.btn-fill:hover::before {
+  transform: translateY(0);
+}
+.btn-fill:hover,
+.btn-fill:hover * {
+  color: #fff !important;
+  border-color: rgb(var(--accent-blue)) !important;
+}
+
+/* Roll: label slides up and a copy rolls in from below */
+.roll {
+  position: relative;
+  display: inline-flex;
+  overflow: hidden;
+  vertical-align: top;
+}
+.roll > span,
+.roll::after {
+  display: block;
+  transition: transform 0.45s cubic-bezier(0.7, 0, 0.2, 1);
+}
+.roll::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  top: 100%;
+  white-space: nowrap;
+}
+:is(a, button):hover .roll > span,
+:is(a, button):hover .roll::after {
+  transform: translateY(-100%);
+}
+
+/* Icon nudges */
+.nudge-x,
+.nudge-y,
+.nudge-fly,
+.nudge-pop {
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+:is(a, button):hover .nudge-x { transform: translateX(4px); }
+:is(a, button):hover .nudge-y { transform: translateY(2px); animation: nudge-bounce 0.8s ease-in-out infinite; }
+:is(a, button):hover .nudge-fly { transform: translate(3px, -3px) rotate(-8deg); }
+:is(a, button):hover .nudge-pop { transform: scale(1.25) rotate(-8deg); }
+
+@keyframes nudge-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(3px); }
+}
+
+/* Infinite marquee rows (Skills) */
+.marquee-mask {
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+
 @keyframes shimmer {
   0% { background-position: 0% 50%; }
   100% { background-position: 250% 50%; }
+}
+
+/* GSAP: hero items start hidden so the intro timeline plays without a flash.
+   The timeline (or the reduced-motion branch) reveals them via autoAlpha. */
+@media (prefers-reduced-motion: no-preference) {
+  [data-hero] {
+    visibility: hidden;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
 }

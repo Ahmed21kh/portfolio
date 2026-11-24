@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Project } from '@/lib/data'
 import {
@@ -100,9 +101,11 @@ export default function ProjectPreviewModal({ project, isOpen, onClose }: Projec
     mobile: 'w-full max-w-[390px]',
   }[device]
 
-  return (
+  // Portal to <body>: inside the Projects section (relative z-10) the modal could never
+  // rise above the fixed navbar, which hid the browser header bar.
+  return createPortal(
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 overflow-hidden">
+      <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4 md:p-6 overflow-hidden">
         {/* Backdrop */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -405,7 +408,8 @@ export default function ProjectPreviewModal({ project, isOpen, onClose }: Projec
           </div>
         </motion.div>
       </div>
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   )
 }
 

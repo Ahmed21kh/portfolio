@@ -1,6 +1,8 @@
 'use client'
 
-import { motion, useInView, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useSectionReveal } from '@/hooks/useSectionReveal'
+import { gsap, ScrollTrigger, useGSAP, MOTION_OK, REDUCED, navOffset } from '@/lib/gsap'
 import { useRef, useState, useEffect } from 'react'
 import { projects, Project } from '@/lib/data'
 import {
@@ -21,15 +23,22 @@ import {
   FiChevronRight
 } from 'react-icons/fi'
 import ProjectPreviewModal from '@/components/ui/ProjectPreviewModal'
+import RollText from '@/components/ui/RollText'
 
 const categories = ['All', 'ERP', 'Education', 'Tools', 'E-commerce', 'Logistics', 'Healthcare']
 
 export default function Projects() {
-  const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-80px' })
+  const ref = useRef<HTMLElement>(null)
+  const galleryRef = useRef<HTMLDivElement>(null)
+  const viewportRef = useRef<HTMLDivElement>(null)
+  const trackRef = useRef<HTMLDivElement>(null)
+  const lastCategory = useRef('All')
+  // true when vertical scroll drives the gallery sideways (vs. native swipe)
+  const [galleryPinned, setGalleryPinned] = useState(true)
+  useSectionReveal(ref)
 
   // State
-  const [viewMode, setViewMode] = useState<'showcase' | 'grid'>('showcase')
+  const [viewMode, setViewMode] = useState<'showcase' | 'grid'>('grid')
   const [activeCategory, setActiveCategory] = useState('All')
   const [selectedProject, setSelectedProject] = useState<Project>(
     projects.find((p) => p.hasLiveDemo) || projects[0]
@@ -75,6 +84,136 @@ export default function Projects() {
     setIsModalOpen(true)
   }
 
+  // ------------------------------------------------------------------
+  // Horizontal gallery
+  //  • Desktop: section pins and vertical scroll drives the cards sideways
+  //  • Mobile / reduced motion: native horizontal swipe with snap
+  // ------------------------------------------------------------------
+  useGSAP(
+    () => {
+      if (viewMode !== 'grid' || !galleryRef.current || !viewportRef.current || !trackRef.current) {
+        ScrollTrigger.refresh()
+        return
+      }
+      const gallery = galleryRef.current
+      const viewport = viewportRef.current
+      const track = trackRef.current
+      const cards = gsap.utils.toArray<HTMLElement>('[data-project-card]', track)
+      const bar = gallery.querySelector<HTMLElement>('[data-gallery-progress]')
+      const counter = gallery.querySelector<HTMLElement>('[data-gallery-counter]')
+
+      const setProgress = (p: number) => {
+        if (bar) gsap.set(bar, { scaleX: Math.max(0.04, p) })
+        if (counter) {
+          const idx = Math.min(cards.length, Math.round(p * (cards.length - 1)) + 1)
+          counter.textContent = String(idx).padStart(2, '0')
+        }
+      }
+      setProgress(0)
+
+      // Cards re-enter with a stagger whenever the category filter changes
+      if (lastCategory.current !== activeCategory) {
+        lastCategory.current = activeCategory
+        if (window.matchMedia(MOTION_OK).matches) {
+          // animate the inner card so it doesn't fight the scrubbed wrapper tween below
+          gsap.from(
+            cards.map((c) => c.firstElementChild),
+            {
+              autoAlpha: 0,
+              y: 40,
+              rotate: 2,
+              transition: 'none',
+              stagger: 0.06,
+              duration: 0.6,
+              ease: 'power3.out',
+              clearProps: 'transform,opacity,visibility,transition',
+            }
+          )
+        }
+      }
+
+      const nativeSwipe = () => {
+        setGalleryPinned(false)
+        const onScroll = () => {
+          const max = viewport.scrollWidth - viewport.clientWidth
+          setProgress(max > 0 ? viewport.scrollLeft / max : 1)
+        }
+        viewport.addEventListener('scroll', onScroll, { passive: true })
+        return () => viewport.removeEventListener('scroll', onScroll)
+      }
+
+      const mm = gsap.matchMedia()
+      mm.add(
+        {
+          motion: MOTION_OK,
+          reduced: REDUCED,
+          // re-evaluate when crossing these widths (card sizes change)
+          mobile: '(max-width: 639px)',
+          tablet: '(min-width: 640px) and (max-width: 1023px)',
+          desktop: '(min-width: 1024px)',
+        },
+        (ctx) => {
+          if (ctx.conditions?.reduced) return nativeSwipe()
+
+          // + left padding: on phones the track runs edge-to-edge (-mx-6 px-6), so the
+          // last card should stop with the same 24px gutter it started with
+          const distance = () =>
+            Math.max(0, track.scrollWidth - viewport.clientWidth + parseFloat(getComputedStyle(viewport).paddingLeft))
+          // Pin on any screen size — as long as the whole gallery fits below the navbar.
+          // Otherwise (very short screens / landscape phones) fall back to native swipe.
+          const fits = gallery.offsetHeight + navOffset() + 8 <= window.innerHeight
+          if (distance() <= 0 || !fits) return nativeSwipe()
+
+          {
+            setGalleryPinned(true)
+            gsap.set(viewport, { overflowX: 'hidden', scrollSnapType: 'none' })
+            const tween = gsap.to(track, {
+              x: () => -distance(),
+              ease: 'none',
+              scrollTrigger: {
+                trigger: gallery,
+                start: () => `top ${Math.max(navOffset(), (window.innerHeight - gallery.offsetHeight) / 2)}`,
+                end: () => '+=' + distance(),
+                pin: true,
+                scrub: 0.8,
+                anticipatePin: 1,
+                invalidateOnRefresh: true,
+                onUpdate: (self) => setProgress(self.progress),
+              },
+            })
+
+            // Each card scales / straightens as it slides into view
+            cards.forEach((card) => {
+              gsap.fromTo(
+                card,
+                { scale: 0.88, rotateY: -18, autoAlpha: 0.35, transformPerspective: 900 },
+                {
+                  scale: 1,
+                  rotateY: 0,
+                  autoAlpha: 1,
+                  ease: 'power2.out',
+                  scrollTrigger: {
+                    trigger: card,
+                    containerAnimation: tween,
+                    start: 'left 100%',
+                    end: 'left 65%',
+                    scrub: true,
+                  },
+                }
+              )
+            })
+          }
+        }
+      )
+
+      // this pin is created after triggers further down the page — re-order them by position first
+      ScrollTrigger.sort()
+      ScrollTrigger.refresh()
+      return () => mm.revert()
+    },
+    { dependencies: [viewMode, activeCategory], revertOnUpdate: true, scope: ref }
+  )
+
   const showcaseDeviceWidth = {
     desktop: 'w-full',
     tablet: 'w-full max-w-[768px]',
@@ -82,32 +221,26 @@ export default function Projects() {
   }[showcaseDevice]
 
   return (
-    <section id="projects" className="relative py-20 px-6 z-10 overflow-hidden">
+    <section id="projects" ref={ref} className="relative py-20 px-6 z-10 overflow-hidden">
       {/* Background ambient glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent-blue/5 rounded-full blur-[140px] pointer-events-none" />
 
-      <div className="max-w-6xl mx-auto" ref={ref}>
+      <div className="max-w-6xl mx-auto">
         {/* Section Heading */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.5 }}
-          >
+          <div>
             <div className="flex items-center gap-3 mb-3">
-              <span className="font-mono text-accent-blue text-sm tracking-widest font-semibold">04.</span>
-              <h2 className="font-display font-bold text-3xl sm:text-4xl text-text-primary">Featured Projects</h2>
+              <span data-reveal="left" className="font-mono text-accent-blue text-sm tracking-widest font-semibold">04.</span>
+              <h2 data-reveal-title className="font-display font-bold text-3xl sm:text-4xl text-text-primary">Featured Projects</h2>
             </div>
-            <p className="text-text-secondary font-body text-sm max-w-xl">
+            <p data-reveal className="text-text-secondary font-body text-sm max-w-xl">
               Production web applications, ERP dashboards, and client portals built with Angular and React. Preview them live inside interactive browser frames.
             </p>
-          </motion.div>
+          </div>
 
           {/* View Mode Toggle (Showcase vs Grid) */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5, delay: 0.1 }}
+          <div
+            data-reveal="right"
             className="flex items-center p-1 rounded-xl bg-bg-card border border-fg/10 shadow-card self-start md:self-auto"
           >
             <button
@@ -130,9 +263,9 @@ export default function Projects() {
               }`}
             >
               <FiGrid size={14} />
-              <span>Cards Grid</span>
+              <span>Gallery</span>
             </button>
-          </motion.div>
+          </div>
         </div>
 
         {/* ========================================================
@@ -145,6 +278,7 @@ export default function Projects() {
             transition={{ duration: 0.5 }}
             className="space-y-6"
           >
+            <div data-reveal="scale" className="space-y-6">
             {/* Project Picker Tabs with Sleek Navigation */}
             <div className="relative flex items-center gap-2">
               {/* Left Arrow Button */}
@@ -410,10 +544,10 @@ export default function Projects() {
                 <div className="flex items-center gap-3">
                   <button
                     onClick={() => handleOpenModal(selectedProject)}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-accent-blue text-white font-body text-xs font-medium shadow-glow-sm hover:scale-105 transition-all"
+                    className="btn-shine flex items-center gap-2 px-4 py-2 rounded-xl bg-accent-blue text-white font-body text-xs font-medium shadow-glow-sm hover:shadow-glow hover:scale-105 transition-[transform,box-shadow] duration-300"
                   >
-                    <FiEye size={14} />
-                    <span>Open in Live Modal</span>
+                    <FiEye size={14} className="nudge-pop" />
+                    <RollText>Open in Live Modal</RollText>
                   </button>
                   {selectedProject.hasLiveDemo && (
                     <a
@@ -429,28 +563,27 @@ export default function Projects() {
                 </div>
               </div>
             </div>
+            </div>
           </motion.div>
         )}
 
         {/* ========================================================
-            VIEW MODE 2: MODERN PROJECT CARDS GRID
+            VIEW MODE 2: HORIZONTAL SCROLL GALLERY
            ======================================================== */}
         {viewMode === 'grid' && (
-          <div className="space-y-8">
-            {/* Filter tabs */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.2 }}
-              className="flex flex-wrap gap-2"
-            >
+          // Wrapper React owns: GSAP's pin moves the inner element into a pin-spacer,
+          // so React must unmount this stable parent instead (avoids removeChild errors).
+          <div>
+          <div ref={galleryRef} className="space-y-6 py-4">
+            {/* Filter tabs — one swipeable row on mobile, wrapped on larger screens */}
+            <div className="flex gap-2 overflow-x-auto no-scrollbar -mx-6 px-6 sm:mx-0 sm:px-0 sm:flex-wrap sm:overflow-visible">
               {categories.map((cat) => {
                 const count = cat === 'All' ? projects.length : projects.filter((p) => p.category === cat).length
                 return (
                   <button
                     key={cat}
                     onClick={() => setActiveCategory(cat)}
-                    className={`flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-mono tracking-wide transition-all duration-200 ${
+                    className={`shrink-0 whitespace-nowrap flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-mono tracking-wide transition-all duration-200 ${
                       activeCategory === cat
                         ? 'bg-accent-blue text-white shadow-glow-sm'
                         : 'bg-bg-card border border-fg/10 text-text-muted hover:text-text-primary hover:border-fg/20'
@@ -463,20 +596,19 @@ export default function Projects() {
                   </button>
                 )
               })}
-            </motion.div>
+            </div>
 
-            {/* Grid */}
-            <motion.div layout className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filtered.map((project, i) => (
-                <motion.div
+            {/* Horizontal track */}
+            <div ref={viewportRef} className="overflow-x-auto snap-x snap-mandatory no-scrollbar py-3 -mx-6 px-6 sm:mx-0 sm:px-0">
+              <div ref={trackRef} className="flex w-max gap-4 sm:gap-6 pr-6 lg:pr-0">
+              {filtered.map((project) => (
+                <div
                   key={project.id}
-                  layout
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={inView ? { opacity: 1, y: 0 } : {}}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.3, delay: i * 0.06 }}
-                  whileHover={{ y: -5 }}
-                  className="group relative p-6 rounded-2xl bg-bg-card border border-fg/10 shadow-card hover:border-accent-blue/40 hover:shadow-glow-sm transition-all duration-200 flex flex-col justify-between"
+                  data-project-card
+                  className="snap-center sm:snap-start shrink-0 w-[82vw] max-w-[340px] sm:max-w-none sm:w-[360px] lg:w-[380px]"
+                >
+                <div
+                  className="group relative h-full p-5 sm:p-6 rounded-2xl bg-bg-card border border-fg/10 shadow-card hover:-translate-y-1.5 hover:border-accent-blue/40 hover:shadow-glow-sm transition-[transform,border-color,box-shadow] duration-300 flex flex-col justify-between"
                 >
                   <div>
                     {/* Top row */}
@@ -512,13 +644,13 @@ export default function Projects() {
                     <p className="font-mono text-text-muted text-xs mb-3 tracking-wide">{project.period}</p>
 
                     {/* Description */}
-                    <p className="text-text-secondary font-body text-sm leading-relaxed mb-4">
+                    <p className="text-text-secondary font-body text-sm leading-relaxed mb-4 line-clamp-3 sm:line-clamp-none">
                       {project.description}
                     </p>
 
                     {/* Highlights bullet tags */}
                     {project.highlights && (
-                      <div className="mb-4 space-y-1">
+                      <div className="mb-4 space-y-1 hidden sm:block">
                         {project.highlights.slice(0, 2).map((h, idx) => (
                           <div key={idx} className="flex items-center gap-1.5 text-xs text-text-muted font-body">
                             <span className="text-accent-blue">✓</span>
@@ -529,7 +661,7 @@ export default function Projects() {
                     )}
 
                     {/* Tech stack */}
-                    <div className="flex flex-wrap gap-1.5 mb-6">
+                    <div className="flex flex-wrap gap-1.5 mb-5 sm:mb-6">
                       {project.tech.map((t) => (
                         <span
                           key={t}
@@ -545,10 +677,10 @@ export default function Projects() {
                   <div className="flex items-center gap-2 pt-4 border-t border-fg/5">
                     <button
                       onClick={() => handleOpenModal(project)}
-                      className="flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-accent-blue/10 hover:bg-accent-blue text-accent-blue hover:text-white font-body text-xs font-medium transition-all"
+                      className="btn-fill flex-1 flex items-center justify-center gap-2 py-2 px-3 rounded-xl bg-accent-blue/10 text-accent-blue font-body text-xs font-medium transition-colors"
                     >
-                      <FiEye size={13} />
-                      <span>{project.hasLiveDemo ? 'Live Iframe Preview' : 'View Architecture'}</span>
+                      <FiEye size={13} className="nudge-pop" />
+                      <RollText>{project.hasLiveDemo ? 'Live Iframe Preview' : 'View Architecture'}</RollText>
                     </button>
 
                     {project.hasLiveDemo && (
@@ -566,9 +698,28 @@ export default function Projects() {
 
                   {/* Hover glow line */}
                   <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-accent-blue/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-b-2xl" />
-                </motion.div>
+                </div>
+                </div>
               ))}
-            </motion.div>
+              </div>
+            </div>
+
+            {/* Progress + hint */}
+            <div className="flex items-center gap-4 font-mono text-xs text-text-muted">
+              <span>
+                <span data-gallery-counter className="text-accent-blue font-semibold">01</span>
+                {' / '}
+                {String(filtered.length).padStart(2, '0')}
+              </span>
+              <div className="relative h-px flex-1 bg-fg/10 overflow-hidden">
+                <div
+                  data-gallery-progress
+                  className="absolute inset-0 origin-left bg-gradient-to-r from-accent-blue to-accent-cyan"
+                />
+              </div>
+              <span>{galleryPinned ? 'Scroll to explore ↓' : 'Swipe →'}</span>
+            </div>
+          </div>
           </div>
         )}
       </div>

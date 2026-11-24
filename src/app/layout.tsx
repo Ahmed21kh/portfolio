@@ -25,6 +25,9 @@ export default function RootLayout({
     <html lang="en" className="scroll-smooth dark" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <noscript>
+          <style>{'[data-hero]{visibility:visible!important}'}</style>
+        </noscript>
       </head>
       <body className="noise-overlay">
         {children}
