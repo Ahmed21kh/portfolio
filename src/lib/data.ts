@@ -127,7 +127,9 @@ export const experiences = [
     period: "Jan 2026 – Present",
     current: true,
     points: [
-      "Developed and maintained large-scale dashboards using Angular for complex business operations.",
+      "Building a multi-tenant SaaS platform for recruitment & labor-leasing offices in Saudi Arabia (Arabic RTL / English).",
+      "Back-office with role-based access, a configurable workflow engine, real-time notifications and dashboards — plus a branded website per office (CMS, 7 templates) and an external agents portal.",
+      "50+ feature modules across recruitment, labor leasing, worker housing, logistics, finance and HR.",
     ],
   },
   {
