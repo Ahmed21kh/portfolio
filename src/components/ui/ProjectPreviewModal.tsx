@@ -35,11 +35,13 @@ export default function ProjectPreviewModal({ project, isOpen, onClose }: Projec
   const [copied, setCopied] = useState(false)
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [iframeKey, setIframeKey] = useState(0)
+  const [linkIdx, setLinkIdx] = useState(0)
   const iframeRef = useRef<HTMLIFrameElement>(null)
 
   // Reset states when opening a project
   useEffect(() => {
     if (isOpen && project) {
+      setLinkIdx(0)
       setIsLoading(true)
       setIframeKey((prev) => prev + 1)
       // Prevent body scrolling
@@ -80,11 +82,19 @@ export default function ProjectPreviewModal({ project, isOpen, onClose }: Projec
 
   if (!isOpen || !project) return null
 
-  const hasLiveLink = project.link && project.link !== '#'
+  const activeUrl = project.links?.[linkIdx]?.url ?? project.link
+  const hasLiveLink = activeUrl && activeUrl !== '#'
+
+  const handleSwitchLink = (idx: number) => {
+    if (idx === linkIdx) return
+    setLinkIdx(idx)
+    setIsLoading(true)
+    setIframeKey((prev) => prev + 1)
+  }
 
   const handleCopyLink = () => {
     if (!hasLiveLink) return
-    navigator.clipboard.writeText(project.link)
+    navigator.clipboard.writeText(activeUrl)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
@@ -169,7 +179,7 @@ export default function ProjectPreviewModal({ project, isOpen, onClose }: Projec
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-bg-primary/90 border border-fg/10 text-xs font-mono text-text-muted">
                 <FiLock size={12} className={hasLiveLink ? 'text-emerald-500' : 'text-amber-500'} />
                 <span className="flex-1 truncate text-text-secondary select-all">
-                  {hasLiveLink ? project.link : `internal://${project.id}.local/dashboard`}
+                  {hasLiveLink ? activeUrl : `internal://${project.id}.local/dashboard`}
                 </span>
                 {hasLiveLink && (
                   <button
@@ -185,6 +195,26 @@ export default function ProjectPreviewModal({ project, isOpen, onClose }: Projec
 
             {/* Right: Device Switcher & Action Controls */}
             <div className="flex items-center gap-2">
+              {/* App Switcher (e.g. Frontend / Dashboard) */}
+              {project.links && project.links.length > 1 && (
+                <div className="flex items-center bg-bg-primary/80 border border-fg/10 rounded-lg p-0.5">
+                  {project.links.map((l, i) => (
+                    <button
+                      key={l.url}
+                      onClick={() => handleSwitchLink(i)}
+                      className={`px-2 py-1 rounded-md text-[11px] font-mono whitespace-nowrap transition-colors ${
+                        linkIdx === i
+                          ? 'bg-accent-blue text-white shadow-sm'
+                          : 'text-text-muted hover:text-text-primary'
+                      }`}
+                      title={l.url}
+                    >
+                      {l.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+
               {/* Responsive Device Switcher */}
               {hasLiveLink && (
                 <div className="flex items-center bg-bg-primary/80 border border-fg/10 rounded-lg p-0.5">
@@ -242,7 +272,7 @@ export default function ProjectPreviewModal({ project, isOpen, onClose }: Projec
               {/* Open in New Window */}
               {hasLiveLink && (
                 <a
-                  href={project.link}
+                  href={activeUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="p-2 rounded-lg border border-fg/10 hover:border-accent-blue/30 text-text-muted hover:text-accent-blue bg-bg-card transition-colors"
@@ -339,7 +369,7 @@ export default function ProjectPreviewModal({ project, isOpen, onClose }: Projec
                 <iframe
                   key={iframeKey}
                   ref={iframeRef}
-                  src={project.link}
+                  src={activeUrl}
                   title={project.name}
                   onLoad={() => setIsLoading(false)}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

@@ -50,6 +50,8 @@ export default function Projects() {
   const [showcaseDevice, setShowcaseDevice] = useState<'desktop' | 'tablet' | 'mobile'>('desktop')
   const [showcaseLoading, setShowcaseLoading] = useState(false)
   const [showcaseKey, setShowcaseKey] = useState(0)
+  const [showcaseLinkIdx, setShowcaseLinkIdx] = useState(0)
+  const showcaseUrl = selectedProject.links?.[showcaseLinkIdx]?.url ?? selectedProject.link
   const tabsContainerRef = useRef<HTMLDivElement>(null)
 
   const handleScrollTabs = (direction: 'left' | 'right') => {
@@ -68,13 +70,14 @@ export default function Projects() {
       setShowcaseLoading(false)
     }, 1200)
     return () => clearTimeout(timer)
-  }, [selectedProject.id, showcaseKey])
+  }, [selectedProject.id, showcaseKey, showcaseUrl])
 
   const filtered =
     activeCategory === 'All' ? projects : projects.filter((p) => p.category === activeCategory)
 
   const handleSelectShowcaseProject = (project: Project) => {
     setSelectedProject(project)
+    setShowcaseLinkIdx(0)
     setShowcaseLoading(true)
     setShowcaseKey((prev) => prev + 1)
   }
@@ -360,7 +363,7 @@ export default function Projects() {
                   <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-bg-primary/90 border border-fg/10 text-xs font-mono text-text-muted">
                     <FiLock size={12} className={selectedProject.hasLiveDemo ? 'text-emerald-500' : 'text-amber-500'} />
                     <span className="flex-1 truncate text-text-secondary">
-                      {selectedProject.hasLiveDemo ? selectedProject.link : `internal://${selectedProject.id}.local/dashboard`}
+                      {selectedProject.hasLiveDemo ? showcaseUrl : `internal://${selectedProject.id}.local/dashboard`}
                     </span>
                     {selectedProject.hasLiveDemo && (
                       <span className="text-[10px] text-emerald-500 font-sans font-medium px-1.5 py-0.2 rounded bg-emerald-500/10">
@@ -372,6 +375,25 @@ export default function Projects() {
 
                 {/* Right: Device Switcher & Controls */}
                 <div className="flex items-center gap-2">
+                  {selectedProject.links && selectedProject.links.length > 1 && (
+                    <div className="flex items-center bg-bg-primary/80 border border-fg/10 rounded-lg p-0.5">
+                      {selectedProject.links.map((l, i) => (
+                        <button
+                          key={l.url}
+                          onClick={() => setShowcaseLinkIdx(i)}
+                          className={`px-2 py-1 rounded-md text-[11px] font-mono whitespace-nowrap transition-colors ${
+                            showcaseLinkIdx === i
+                              ? 'bg-accent-blue text-white shadow-sm'
+                              : 'text-text-muted hover:text-text-primary'
+                          }`}
+                          title={l.url}
+                        >
+                          {l.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
                   {selectedProject.hasLiveDemo && (
                     <div className="flex items-center bg-bg-primary/80 border border-fg/10 rounded-lg p-0.5">
                       <button
@@ -429,7 +451,7 @@ export default function Projects() {
 
                   {selectedProject.hasLiveDemo && (
                     <a
-                      href={selectedProject.link}
+                      href={showcaseUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="p-1.5 rounded-lg border border-fg/10 hover:border-accent-blue/30 text-text-muted hover:text-accent-blue bg-bg-card transition-colors"
@@ -483,7 +505,7 @@ export default function Projects() {
                   >
                     <iframe
                       key={showcaseKey}
-                      src={selectedProject.link}
+                      src={showcaseUrl}
                       title={selectedProject.name}
                       onLoad={() => setShowcaseLoading(false)}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -551,7 +573,7 @@ export default function Projects() {
                   </button>
                   {selectedProject.hasLiveDemo && (
                     <a
-                      href={selectedProject.link}
+                      href={showcaseUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center gap-2 px-4 py-2 rounded-xl border border-fg/10 hover:border-accent-blue/40 text-text-secondary hover:text-text-primary font-body text-xs transition-colors"
@@ -683,17 +705,22 @@ export default function Projects() {
                       <RollText>{project.hasLiveDemo ? 'Live Iframe Preview' : 'View Architecture'}</RollText>
                     </button>
 
-                    {project.hasLiveDemo && (
-                      <a
-                        href={project.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="p-2 rounded-xl border border-fg/10 hover:border-accent-blue/40 text-text-muted hover:text-accent-blue transition-colors"
-                        title="Open direct link in new tab"
-                      >
-                        <FiExternalLink size={14} />
-                      </a>
-                    )}
+                    {project.hasLiveDemo &&
+                      (project.links ?? [{ label: 'Live site', url: project.link }]).map((l) => (
+                        <a
+                          key={l.url}
+                          href={l.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1.5 p-2 rounded-xl border border-fg/10 hover:border-accent-blue/40 text-text-muted hover:text-accent-blue transition-colors"
+                          title={`Open ${l.label} in new tab`}
+                        >
+                          <FiExternalLink size={14} />
+                          {project.links && project.links.length > 1 && (
+                            <span className="font-mono text-[10px]">{l.label}</span>
+                          )}
+                        </a>
+                      ))}
                   </div>
 
                   {/* Hover glow line */}

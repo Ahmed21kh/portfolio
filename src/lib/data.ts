@@ -163,6 +163,8 @@ export interface Project {
   period: string;
   description: string;
   link: string;
+  /** Extra live URLs (e.g. frontend + admin dashboard). First entry is the default view. */
+  links?: { label: string; url: string }[];
   category: string;
   featured?: boolean;
   hasLiveDemo?: boolean;
@@ -280,11 +282,15 @@ export const projects: Project[] = [
     tech: ["Angular", "RxJS", "Reactive Forms", "Guards"],
     period: "Oct 2022 – Dec 2022",
     description:
-      "Responsive Angular medical appointment platform. Implemented appointment scheduling, patient histories, cancellation workflows, and role-based route guards.",
-    link: "#",
+      "Responsive Angular medical appointment platform with a patient-facing app and an admin dashboard. Implemented appointment scheduling, patient histories, cancellation workflows, and role-based route guards.",
+    link: "https://docbook-user.vercel.app/",
+    links: [
+      { label: "Frontend", url: "https://docbook-user.vercel.app/" },
+      { label: "Dashboard", url: "https://dockbook-dashboard.vercel.app/" },
+    ],
     category: "Healthcare",
     featured: false,
-    hasLiveDemo: false,
+    hasLiveDemo: true,
     highlights: ["Appointment calendar engine", "Route guards & security", "Reactive patient records"],
   },
 ];
